@@ -1,3 +1,59 @@
+from itertools import permutations as perm
+import copy
+
+
+def isTrueSudoku(matrix,allPeers):
+    correctSudoku = True
+    for grid in matrix.keys():
+        for peer in allPeers[grid]:
+            if matrix[grid] == matrix[peer]:
+                correctSudoku = False
+    return correctSudoku
+
+def finalFix(matrix,matrix2,allPeers, boxPeers):
+    notFailed = True
+    for grid in matrix.keys():
+
+        if not notFailed:
+            return "No"
+            break
+        if len(matrix[grid]) == 2:
+            p=matrix[grid][1]
+            matrix[grid] = [matrix[grid][0]]
+            notFailed = True
+            while notFailed:
+
+                sum1 = sum([len(a) for a in matrix.values()])
+                matrix = scrubSingles(matrix, allPeers)
+                matrix = scrubSpecialPairs(matrix, allPeers)
+                matrix = scrubByElimination(matrix, allPeers, boxPeers)
+                sum2 = sum([len(a) for a in matrix.values()])
+                if sum1 == sum2:
+                    notFailed = False
+            if isTrueSudoku(matrix, allPeers):
+                return matrix
+
+
+            matrix2[grid] = [p]
+            notFailed = True
+            while notFailed:
+                sum1 = sum([len(a) for a in matrix2.values()])
+                matrix2 = scrubSingles(matrix2, allPeers)
+                matrix2 = scrubSpecialPairs(matrix2, allPeers)
+                matrix2 = scrubByElimination(matrix2, allPeers, boxPeers)
+                sum2 = sum([len(a) for a in matrix2.values()])
+                if sum1 == sum2:
+                    notFailed = False
+            if isTrueSudoku(matrix2,allPeers):
+                return matrix2
+
+
+    return "No"
+
+
+
+
+
 def scrubSingles(matrix,allPeers):
     '''This method receives a matrix
     and removes the values of solved
@@ -66,8 +122,8 @@ def scrubByElimination(matrix,allPeers,boxPeers):
     :type allPeers: dict()
     :type boxPeers: dict()
      '''
-    print(matrix.items())
     #for a specific box
+
     for boxLocation in boxPeers.keys():
         # search for values from 1 - 9
         for digit in range(1, 10):
@@ -90,4 +146,37 @@ def scrubByElimination(matrix,allPeers,boxPeers):
                     if peer not in blockedPeers.keys():
                         matrix[peer] = [str(digit)]
     return matrix
+
+
+
+def guessingGame(grid,matrix1,allPeers,boxPeers):
+    '''If this method has been called then all hope has been lost and we are attempting random values
+
+    :type matrix1: dict()
+    :type grid: str()
+     '''
+
+    '''for useIndex in range(2):
+        notFailed = True
+        checkMatrix = copy.deepcopy(matrix1)
+        checkMatrix[grid] = list(checkMatrix[grid][useIndex])
+
+        while notFailed:
+            sum1 = sum([len(a) for a in checkMatrix.values()])
+            checkMatrix = scrubSingles(checkMatrix, allPeers)
+            checkMatrix = scrubSpecialPairs(checkMatrix, allPeers)
+            checkMatrix = scrubByElimination(checkMatrix, allPeers, boxPeers)
+            sum2 = sum([len(a) for a in checkMatrix.values()])
+            if sum1==sum2:
+                if sum1 == 81:
+                    return checkMatrix
+                notFailed = False'''
+
+    out = finalFix(copy.deepcopy(matrix1),copy.deepcopy(matrix1),allPeers, boxPeers)
+    if type(out) == dict:
+        return out
+    else:
+        return matrix1
+
+
 

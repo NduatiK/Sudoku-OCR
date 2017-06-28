@@ -53,3 +53,12 @@ def fillBoxPeersDict():
                 a = "".join(next(boxValuesGen))
                 boxMatrix[n].extend([a])
     return boxMatrix
+
+def listOfGrids():
+    gridList =list()
+    gridListGen = product( rows,cols)
+    for a in range(81):
+        nextGrid = next(gridListGen)
+        gridList.append("".join(nextGrid[1]+nextGrid[0]))
+    return gridList
+
