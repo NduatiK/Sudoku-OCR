@@ -21,6 +21,7 @@ matrix = populateMatrix.readFromFile(filename,matrix,splitter="\t")
 sum2 = 0
 shouldExitGuessing = False
 while sum([len(a) for a in matrix.values()]) != 81:  # stop only when finished
+    print(".")
     sum1 = (sum([len(a) for a in matrix.values()]))
     matrix = calc.scrubSingles(matrix,allPeers)
     matrix = calc.scrubSpecialPairs(matrix,allPeers)
@@ -45,11 +46,7 @@ while sum([len(a) for a in matrix.values()]) != 81:  # stop only when finished
 
 outputMatrix = ([val for key, val in matrix.items()])
 for a in range(9):
-    if a % 3 == 0 and a != 0:
-        print ('----------------+-----------------+--------------')
     for b in range(9):
-        if b % 3 == 0 and b != 0:
-            print(" | ",end='')
-        print(" ",outputMatrix[a+b*9][0]," ",end='')
+        print(outputMatrix[a+b*9][0],"\t",end='')
     print()
 print(calc.isTrueSudoku(matrix,allPeers))
