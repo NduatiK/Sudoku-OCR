@@ -16,8 +16,8 @@ filename="a.txt"
 matrix = matrixGenerator.fillMatrixDict()
 allPeers = matrixGenerator.fillPeersDict()
 boxPeers = matrixGenerator.fillBoxPeersDict()
-matrix = populateMatrix.readFromFile(filename,matrix,splitter="\t")
-
+matrix = populateMatrix.readFromFile(filename,matrix,splitter="|")
+trys = 2
 sum2 = 0
 shouldExitGuessing = False
 while sum([len(a) for a in matrix.values()]) != 81:  # stop only when finished
@@ -26,21 +26,19 @@ while sum([len(a) for a in matrix.values()]) != 81:  # stop only when finished
     matrix = calc.scrubSingles(matrix,allPeers)
     matrix = calc.scrubSpecialPairs(matrix,allPeers)
     matrix = calc.scrubByElimination(matrix,allPeers,boxPeers)
+    print(sum1,sum2)
     sum2 = (sum([len(a) for a in matrix.values()]))
-
     if sum1 == sum2 and sum1 != 81: #all else has failed
         shouldExitGuessing = False
         for grid in matrix.keys():
-            if shouldExitGuessing:
-                break
-            if len(matrix[grid]) == 2:
+            #if shouldExitGuessing: break
+            if len(matrix[grid]) == trys:
                 for peer in allPeers[grid]:
-                    if matrix[peer]==matrix[grid]: #found matching
-                        matrix1 = calc.guessingGame(grid, matrix, allPeers, boxPeers)
-                        if calc.isTrueSudoku(matrix1,allPeers):
-                            matrix = matrix1
-                            shouldExitGuessing = True
-                        break
+                    matrix = calc.guessingGame(grid, matrix, allPeers, boxPeers,trys)
+                    shouldExitGuessing = True
+                    break
+        trys += 1
+
 
 
 
